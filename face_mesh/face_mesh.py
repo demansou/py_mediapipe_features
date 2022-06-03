@@ -19,7 +19,6 @@ class MediaPipeDetection:
                 image, results = self.__mediapipe_detection(frame, fm)
                 if logging:
                     print(results)
-                # self.__draw_landmarks(image, results)
                 self.__draw_styled_landmarks(image, results)
                 cv2.imshow('OpenCV Feed', image)
                 if cv2.waitKey(10) & 0xFF == ord('q'):
@@ -42,6 +41,11 @@ class MediaPipeDetection:
         default_tesselation_style = self.mp_drawing_styles.get_default_face_mesh_tesselation_style()
         default_contours_style = self.mp_drawing_styles.get_default_face_mesh_contours_style()
         default_iris_style = self.mp_drawing_styles.get_default_face_mesh_iris_connections_style()
+
+        if not results.multi_face_landmarks:
+            print("No face landmarks detected. Perhaps image too dark?")
+            return
+
         for face_landmarks in results.multi_face_landmarks:
             drawer.draw_landmarks(image, face_landmarks, connections.FACEMESH_TESSELATION,
                 landmark_drawing_spec=None, connection_drawing_spec=default_tesselation_style)
